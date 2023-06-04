@@ -10,7 +10,7 @@ function tryNullOnError(fn) {
   }
 }
 
-function arrayFilterMinimatch(arr, patterns) {
+function filterArrayMinimatch(arr, patterns) {
   return arr.filter(
     (str) => !patterns.some((pattern) => minimatch.minimatch(str, pattern))
   );

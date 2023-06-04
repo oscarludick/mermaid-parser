@@ -27,7 +27,7 @@ async function createDataFileArray(rootPath, directoryFiles, excludedFiles) {
 async function parseDirectoryFiles(path, excludedFiles) {
   if (fileUtils.isDirectory(path)) {
     const contentDirectory = fileUtils.readDirectory(path);
-    const directory = commonUtils.arrayFilterMinimatch(
+    const directory = commonUtils.filterArrayMinimatch(
       contentDirectory,
       excludedFiles
     );
