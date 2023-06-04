@@ -1,0 +1,17 @@
+{
+  "name": "mermaid-diagram-gen",
+  "version": "1.0.0",
+  "description": "Generate mermaid diagriams from the path specified",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Oscar Ludick",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/parser": "^7.14.8",
+    "@babel/traverse": "^7.14.8",
+    "typescript": "^4.4.3",
+    "minimatch": "^9.0.1"
+  }
+}
