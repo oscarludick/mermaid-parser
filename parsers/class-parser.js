@@ -3,8 +3,6 @@
 const parser = require("@babel/parser");
 const traverse = require("@babel/traverse").default;
 
-const mermaidParser = require("./mermaid-parser");
-
 function extractPropertiesAndMethods(code) {
   const ast = parser.parse(code, {
     sourceType: "module",
@@ -81,55 +79,26 @@ function cleanDataType(dataType) {
   return dataType.replace("TS", "").replace("Keyword", "");
 }
 
-const jsonData = [
-  {
-    path: "./mocks/test.ts",
-    content:
-      "export class Test {\n" +
-      "    private variableOne: string;\n" +
-      "\n" +
-      "    public variableTwo: number = this.variableOne;\n" +
-      "\n" +
-      "    constructor(private _dep: DepOne, public depTwo: number) {}\n" +
-      "\n" +
-      "    private onMethodOne(numericValue: number): string {\n" +
-      "        return numericValue + this.variableOne;\n" +
-      "    }\n" +
-      "}",
-  },
-  {
-    path: './mocks/test2.ts',
-    content: 'export class Test2 {\n' +
-      '    private variableOne: string;\n' +
-      '\n' +
-      '    public variabletwo: number;\n' +
-      '\n' +
-      '    constructor() {}\n' +
-      '\n' +
-      '    public onMethodOne(numericValue: number): string {\n' +
-      '        return numericValue + "";\n' +
-      '    }\n' +
-      '}'
-  }
-];
+function generateClassJson(jsonData) {
+  const extractedData = [];
 
-const extractedData = [];
-
-jsonData.forEach((data) => {
-  const extractedItems = extractPropertiesAndMethods(data.content);
-  extractedItems.forEach((item) => {
-    item.propertyType = cleanDataType(item.propertyType);
-    item.returnType = cleanDataType(item.returnType);
-    item.params = item.params?.map((param) => ({
-      ...param,
-      propertyType: cleanDataType(param.propertyType),
-    }));
-    item.sourcePath = data.path;
+  jsonData.forEach((data) => {
+    const extractedItems = extractPropertiesAndMethods(data.content);
+    extractedItems.forEach((item) => {
+      item.propertyType = cleanDataType(item.propertyType);
+      item.returnType = cleanDataType(item.returnType);
+      item.params = item.params?.map((param) => ({
+        ...param,
+        propertyType: cleanDataType(param.propertyType),
+      }));
+      item.sourcePath = data.path;
+    });
+    extractedData.push(...extractedItems);
   });
-  extractedData.push(...extractedItems);
-});
 
-console.log(JSON.stringify(extractedData, null, 2));
+  return extractedData;
+}
 
-const mermaidSyntax = mermaidParser.generateMermaidSyntax(extractedData);
-console.log(mermaidSyntax);
+module.exports = {
+  generateClassJson,
+};

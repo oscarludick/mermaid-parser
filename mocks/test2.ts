@@ -1,11 +1,13 @@
+import { Test } from "./test";
+
 export class Test2 {
-    private variableOne: string;
+  private variableOne: string;
 
-    public variabletwo: number;
+  public variabletwo: number;
 
-    constructor() {}
+  constructor(private _test: Test) {}
 
-    public onMethodOne(numericValue: number): string {
-        return numericValue + "";
-    }
+  public onMethodOne(numericValue: number): string {
+    return numericValue + "";
+  }
 }

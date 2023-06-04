@@ -18,5 +18,5 @@ function filterArrayMinimatch(arr, patterns) {
 
 module.exports = {
   tryNullOnError,
-  arrayFilterMinimatch,
+  filterArrayMinimatch,
 };

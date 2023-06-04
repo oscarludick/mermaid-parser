@@ -8,6 +8,8 @@ function getAccessibility(accessibility) {
       return "-";
     case "protected":
       return "#";
+    default:
+      return "";
   }
 }
 
@@ -33,9 +35,9 @@ function generateMermaidSyntax(data) {
         item.accessibility
       )}${item.name}(`;
       item.params.forEach((param, index) => {
-        relationships.push(item.class + " -->  " + item.propertyType + ": Has-A");
+        relationships.push(item.class + " -->  " + param.propertyType + ": Has-A");
         
-        mermaidSyntax += `${getAccessibility(item.accessibility)}${
+        mermaidSyntax += `${getAccessibility(param.accessibility)}${
           param.propertyType
         } ${param.name}`;
         if (index < item.params.length - 1) {
@@ -53,7 +55,7 @@ function generateMermaidSyntax(data) {
 
   console.log(relationships);
 
-  return mermaidSyntax;
+  return `classDiagram\n${mermaidSyntax}`;
 }
 
 module.exports = {

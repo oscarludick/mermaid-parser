@@ -36,10 +36,10 @@ async function parseDirectoryFiles(path, excludedFiles) {
   return [];
 }
 
-async function parseDirectory(path, excludedFiles) {
+async function generateDirectoryData(path, excludedFiles) {
   return await parseDirectoryFiles(path, excludedFiles);
 }
 
 module.exports = {
-  parseDirectory,
+  generateDirectoryData,
 };
