@@ -1,5 +1,5 @@
 export class Test {
-    private variableOne: string;
+    private static variableOne: string = '1'
 
     public variabletwo: number;
 

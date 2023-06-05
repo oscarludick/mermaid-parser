@@ -39,7 +39,7 @@ function extractClassProperty(extractedItems) {
       extractedItems.push({
         relations: [],
         name: key.name,
-        static: path.static,
+        static: path.node.static,
         type: "property",
         accessibility: accessibility || "public",
         class: path.parentPath.scope.block.id.name,

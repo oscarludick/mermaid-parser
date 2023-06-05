@@ -13,6 +13,8 @@ function getAccessibility(accessibility) {
   }
 }
 
+function appendClassRelationship() {}
+
 function generateMermaidSyntax(data) {
   const classNames = [];
   const relationships = [];
@@ -29,14 +31,16 @@ function generateMermaidSyntax(data) {
 
       mermaidSyntax += `${item.class} : ${getAccessibility(
         item.accessibility
-      )}${item.propertyType} ${item.name}\n`;
+      )}${item.propertyType} ${item.name}${item.static ? "$" : ""}\n`;
     } else if (item.type === "constructor" || item.type === "method") {
       mermaidSyntax += `${item.class} : ${getAccessibility(
         item.accessibility
       )}${item.name}(`;
       item.params.forEach((param, index) => {
-        relationships.push(item.class + " -->  " + param.propertyType + ": Has-A");
-        
+        relationships.push(
+          item.class + " -->  " + param.propertyType + ": Has-A"
+        );
+
         mermaidSyntax += `${getAccessibility(param.accessibility)}${
           param.propertyType
         } ${param.name}`;
