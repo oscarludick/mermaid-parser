@@ -17,7 +17,61 @@ function getCleanedDataType(dataType) {
   return dataType.replace("TS", "").replace("Keyword", "");
 }
 
-function extractMemberFunction(items) {
+const getParameterPropName = (param) => {
+  const { type, parameter, name } = param;
+  return type === "TSParameterProperty" ? parameter.name : name;
+};
+
+const getParameterPropType = (param) => {
+  const { type, parameter, typeAnnotation } = param;
+  if (type === "TSParameterProperty") {
+    return getFullTypeAnnotationName(parameter);
+  } else {
+    return getFullTypeAnnotationName(typeAnnotation);
+  }
+};
+
+function getTypeName(typeNode) {
+  return (
+    typeNode?.typeAnnotation?.typeAnnotation?.typeName?.name ||
+    typeNode?.typeAnnotation?.typeName?.name ||
+    typeNode?.typeAnnotation?.type ||
+    typeNode?.typeName?.name ||
+    typeNode?.type
+  );
+}
+
+function getTypeParameterNames(typeParameters) {
+  const result = [];
+  if (typeParameters) {
+    typeParameters.params.forEach((param) => {
+      result.push(getTypeName(param));
+      if (param.typeParameters) {
+        result.push(...getTypeParameterNames(param.typeParameters));
+      }
+    });
+  }
+  return result;
+}
+
+function getFullTypeAnnotationName(typeNode) {
+  const typeParameters = typeNode?.typeAnnotation?.typeParameters;
+
+  const typeName = getTypeName(typeNode);
+  const typeParameterNames = getTypeParameterNames(typeParameters);
+
+  const fullTypeName = typeParameterNames.reduce((fullType, type, index) => {
+    fullType = `${fullType}<${type}`;
+    if (index === typeParameterNames.length - 1) {
+      fullType = `${fullType}${typeParameterNames.map(() => ">").join("")}`;
+    }
+    return fullType;
+  }, typeName);
+
+  return fullTypeName;
+}
+
+function extractMemberExpression(items) {
   return {
     MemberExpression(path) {
       const { scope, node } = path;
@@ -44,51 +98,41 @@ function extractClassProperty(extractedItems) {
         accessibility: accessibility || "public",
         class: path.parentPath.scope.block.id.name,
         initialValue: value ? value.value : undefined,
-        propertyType: typeAnnotation?.typeAnnotation?.type || "unknown",
+        propertyType: getFullTypeAnnotationName(typeAnnotation),
       });
     },
   };
 }
 
 function extractFunction(extractedItems) {
-  const getParameterPropName = (param) => {
-    const { type, parameter, name } = param;
-    return type === "TSParameterProperty" ? parameter.name : name;
-  };
-
-  const getParameterPropType = (param) => {
-    const { type, parameter, typeAnnotation } = param;
-    if (type === "TSParameterProperty") {
-      return (
-        parameter.typeAnnotation?.typeAnnotation.typeName?.name ||
-        parameter.typeAnnotation?.typeAnnotation.type
-      );
-    } else {
-      return (
-        typeAnnotation?.typeAnnotation.typeName?.name ||
-        typeAnnotation?.typeAnnotation.type
-      );
-    }
-  };
-
   return {
-    Function(path) {
-      const { key, accessibility, returnType, kind, params } = path.node;
-      const extractedItem = {
-        type: kind,
-        relations: [],
-        name: key.name,
-        static: path.static,
-        accessibility: accessibility || "public",
-        class: path.parentPath.scope.block.id.name,
-        returnType: returnType?.typeAnnotation.type,
-        params: params.map((param) => ({
-          accessibility: param.accessibility,
-          name: getParameterPropName(param),
-          propertyType: getParameterPropType(param),
-        })),
-      };
-      extractedItems.push(extractedItem);
+    Class(rootPath) {
+      const nodes = rootPath.node.body.body.filter(
+        (node) => node.type === "ClassMethod" || node.type === "TSDeclareMethod"
+      );
+      nodes.forEach((path) => {
+        const { key, accessibility, returnType, kind, params } = path;
+        const extractedItem = {
+          type: kind,
+          relations: [],
+          name: key.name,
+          static: path.static,
+          abstract: path.abstract,
+          accessibility: accessibility || "public",
+          class: rootPath.node.id.name,
+          extends: rootPath.node.superClass?.name,
+          implements: rootPath.node.implements?.map(
+            (node) => node.expression.name
+          ),
+          returnType: getFullTypeAnnotationName(returnType),
+          params: params.map((param) => ({
+            accessibility: param.accessibility,
+            name: getParameterPropName(param),
+            propertyType: getParameterPropType(param),
+          })),
+        };
+        extractedItems.push(extractedItem);
+      });
     },
   };
 }
@@ -99,7 +143,16 @@ function extractPropertiesAndMethods(code) {
   traverse(ast, {
     ...extractFunction(extractedItems),
     ...extractClassProperty(extractedItems),
-    ...extractMemberFunction(extractedItems),
+    ...extractMemberExpression(extractedItems),
+    ClassDeclaration(path) {
+      extractedItems.push({
+        type: "class",
+        abstract: path.node.abstract,
+        name: path.node.id.name,
+        extends: path.node.superClass?.name,
+        implements: path.node.implements?.map((node) => node.expression.name),
+      });
+    },
   });
   return extractedItems;
 }
