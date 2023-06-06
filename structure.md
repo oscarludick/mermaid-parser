@@ -11,4 +11,5 @@ Test2 : +Number variabletwo
 Test2 : +constructor(-Test _test)
 Test2 : +onMethodOne(Number numericValue) String
 
+Test2 -->  Test: Has-A
 ```

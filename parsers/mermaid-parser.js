@@ -13,7 +13,11 @@ function getAccessibility(accessibility) {
   }
 }
 
-function appendClassRelationship() {}
+function appendClassRelationship(relations, clazz, propertyType) {
+  if (!propertyType.match(/String|Number|Boolean/gi)) {
+    relations.push(clazz + " -->  " + propertyType + ": Has-A");
+  }
+}
 
 function generateMermaidSyntax(data) {
   const classNames = [];
@@ -27,8 +31,7 @@ function generateMermaidSyntax(data) {
     }
 
     if (item.type === "property") {
-      relationships.push(item.class + " -->  " + item.propertyType + ": Has-A");
-
+      appendClassRelationship(relationships, item.class, item.propertyType);
       mermaidSyntax += `${item.class} : ${getAccessibility(
         item.accessibility
       )}${item.propertyType} ${item.name}${item.static ? "$" : ""}\n`;
@@ -37,10 +40,7 @@ function generateMermaidSyntax(data) {
         item.accessibility
       )}${item.name}(`;
       item.params.forEach((param, index) => {
-        relationships.push(
-          item.class + " -->  " + param.propertyType + ": Has-A"
-        );
-
+        appendClassRelationship(relationships, item.class, param.propertyType);
         mermaidSyntax += `${getAccessibility(param.accessibility)}${
           param.propertyType
         } ${param.name}`;
@@ -57,9 +57,7 @@ function generateMermaidSyntax(data) {
     mermaidSyntax = `class ${className}\n` + mermaidSyntax;
   });
 
-  console.log(relationships);
-
-  return `classDiagram\n${mermaidSyntax}`;
+  return `classDiagram\n${mermaidSyntax}\n${relationships}`;
 }
 
 module.exports = {
