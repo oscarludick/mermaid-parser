@@ -15,8 +15,13 @@ function readFile(path, encoding = "utf8") {
   return commonUtils.tryNullOnError(() => fs.readFileSync(path, encoding));
 }
 
+function writeFile(path, content) {
+  return commonUtils.tryNullOnError(() => fs.writeFileSync(path, content));
+}
+
 module.exports = {
-  readDirectory,
-  readFile,
   isDirectory,
+  writeFile,
+  readFile,
+  readDirectory,
 };

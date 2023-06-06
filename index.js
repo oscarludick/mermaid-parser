@@ -1,21 +1,22 @@
 "use strict";
 
-const classParser = require("./parsers/class-parser");
-const mermaidParser = require("./parsers/mermaid-parser");
-const directoryParser = require("./parsers/directory-parser");
+const parsers = require("./parsers");
+const utils = require("./utils");
 
 const path = ".";
 const exclude = ["*.js", "*.json", "node_modules", ".gitignore", ".git"];
 
 function main() {
-  const dataFiles = directoryParser.generateDirectoryData(path, exclude);
+  const dataFiles = parsers.generateDirectoryData(path, exclude);
   console.log(dataFiles);
 
-  const jsonData = classParser.generateJsonClass(dataFiles);
+  const jsonData = parsers.generateJsonClass(dataFiles);
   console.log(jsonData);
 
-  const mermaidSyntax = mermaidParser.generateMermaidSyntax(jsonData);
+  const mermaidSyntax = parsers.generateMermaidSyntax(jsonData);
   console.log(mermaidSyntax);
+
+  utils.writeFile("structure.md", mermaidSyntax);
 }
 
 main();

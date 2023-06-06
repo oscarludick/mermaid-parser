@@ -1,16 +1,11 @@
-```mermaid
-graph TB
-
-  SubGraph1 --> SubGraph1Flow
-  subgraph "SubGraph 1 Flow"
-  SubGraph1Flow(SubNode 1)
-  SubGraph1Flow -- Choice1 --> DoChoice1
-  SubGraph1Flow -- Choice2 --> DoChoice2
-  end
-
-  subgraph "Main Graph"
-  Node1[Node 1] --> Node2[Node 2]
-  Node2 --> SubGraph1[Jump to SubGraph1]
-  SubGraph1 --> FinalThing[Final Thing]
-end
-```
+classDiagram
+class Test2
+class Test
+Test : -String variableOne$
+Test : +Number variabletwo
+Test : +constructor()
+Test : +onMethodOne(Number numericValue) String
+Test2 : -String variableOne
+Test2 : +Number variabletwo
+Test2 : +constructor(-Test _test)
+Test2 : +onMethodOne(Number numericValue) String

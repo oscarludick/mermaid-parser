@@ -1,10 +1,9 @@
 "use strict";
 
-const fileUtils = require("../utils/file-utils");
-const commonUtils = require("../utils/common-utils");
+const utils = require("../utils");
 
 function appendFileToData(path, dataFiles) {
-  const file = fileUtils.readFile(path);
+  const file = utils.readFile(path);
   if (file) {
     dataFiles.push({
       path,
@@ -25,9 +24,9 @@ function createDataFileArray(rootPath, directoryFiles, excludedFiles) {
 }
 
 function parseDirectoryFiles(path, excludedFiles) {
-  if (fileUtils.isDirectory(path)) {
-    const contentDirectory = fileUtils.readDirectory(path);
-    const directory = commonUtils.filterArrayMinimatch(
+  if (utils.isDirectory(path)) {
+    const contentDirectory = utils.readDirectory(path);
+    const directory = utils.filterArrayMinimatch(
       contentDirectory,
       excludedFiles
     );
