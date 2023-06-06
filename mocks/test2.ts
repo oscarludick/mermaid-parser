@@ -34,6 +34,10 @@ export abstract class Api implements IApi, IApi2, IApi3 {
   }
 }
 
+export class ApiConcrete extends Api{
+
+}
+
 export abstract class Facade {
   abstract onGeolocationOpen(): void;
 

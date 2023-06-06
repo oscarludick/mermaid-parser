@@ -59,17 +59,17 @@ function appendFunctionSyntax(syntax, item, relationships) {
       "HAS-A",
       "-->"
     );
-    syntax += `${getAccessibility(
-      param.accessibility
-    )}${replaceGenericTypes(param.propertyType)} ${param.name}`;
+    syntax += `${getAccessibility(param.accessibility)}${replaceGenericTypes(
+      param.propertyType
+    )} ${param.name}`;
     if (index < item.params.length - 1) {
       syntax += ", ";
     }
   });
   syntax +=
     item.type === "method"
-      ? `) ${replaceGenericTypes(item.returnType)}\n`
-      : ")\n";
+      ? `) ${replaceGenericTypes(item.returnType)}${item.abstract ? "*" : ""}\n`
+      : `)${item.abstract ? "*" : ""}\n`;
   return syntax;
 }
 
@@ -77,11 +77,15 @@ function generateMermaidSyntax(data) {
   const relationships = [];
 
   let mermaidSyntax = "";
-  console.log(data);
+
+ // console.log(data);
 
   data.forEach((item) => {
     if (item.type === "class") {
-      mermaidSyntax = `class ${item.name}\n` + mermaidSyntax;
+      mermaidSyntax =
+        `class ${item.name}\n${
+          item.abstract ? "<<Abstract>>" + item.name + "\n" : ""
+        }` + mermaidSyntax;
       appendClassRelationship(
         relationships,
         item.name,

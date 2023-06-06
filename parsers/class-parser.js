@@ -104,13 +104,16 @@ function extractClassProperty(extractedItems) {
   };
 }
 
-function extractFunction(extractedItems) {
+function extractMethod(extractedItems) {
   return {
     Class(rootPath) {
       const nodes = rootPath.node.body.body.filter(
         (node) => node.type === "ClassMethod" || node.type === "TSDeclareMethod"
       );
       nodes.forEach((path) => {
+        // path.body.body.forEach(((x)=>{
+        //   console.log(x)
+        // }))
         const { key, accessibility, returnType, kind, params } = path;
         const extractedItem = {
           type: kind,
@@ -141,9 +144,12 @@ function extractPropertiesAndMethods(code) {
   const ast = getTypescriptAST(code);
   const extractedItems = [];
   traverse(ast, {
-    ...extractFunction(extractedItems),
+    ...extractMethod(extractedItems),
     ...extractClassProperty(extractedItems),
     ...extractMemberExpression(extractedItems),
+    ObjectTypeAnnotation(path) {
+      console.log(path.node)
+    },
     ClassDeclaration(path) {
       extractedItems.push({
         type: "class",

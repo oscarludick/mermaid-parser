@@ -2,8 +2,12 @@
 classDiagram
 class LocationPageFacade
 class LocationFacade
+<<Abstract>>LocationFacade
 class Facade
+<<Abstract>>Facade
+class ApiConcrete
 class Api
+<<Abstract>>Api
 class Sandbox
 class Observable
 class Test2
@@ -19,7 +23,7 @@ Test2 : +Number variabletwo
 Test2 : +Observable~Number~ variablethree
 Observable : +subscribe() Void
 Api : +doRequest(String url) Observable~Void~
-Facade : +onGeolocationOpen() Void
+Facade : +onGeolocationOpen() Void*
 Facade : +constructor(+Sandbox sandbox, -Api _api)
 LocationFacade : -_isLocation(Event event) Observable~Boolean~
 LocationFacade : +requestLocation(Observable~Number~ param) Observable~Observable~Number~~
@@ -30,6 +34,7 @@ Test2 -->  Observable~Number~:HAS-A
 Api ..|>  IApi:IMPLEMENTS
 Api ..|>  IApi2:IMPLEMENTS
 Api ..|>  IApi3:IMPLEMENTS
+ApiConcrete --|>  Api:IS-A
 Facade -->  Sandbox:HAS-A
 Facade -->  Api:HAS-A
 LocationFacade --|>  Facade:IS-A
