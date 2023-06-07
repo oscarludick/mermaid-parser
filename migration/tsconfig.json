@@ -7,7 +7,7 @@
     "esModuleInterop": true,
     "sourceMap": true,
     "outDir": "dist",
-    "rootDir": ".",
+    "rootDir": "src",
     "resolveJsonModule": true,
     "declaration": true,
     "noUnusedLocals": true,
@@ -16,7 +16,7 @@
     "strictNullChecks": true,
     "noImplicitThis": true,
     "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
+    "noEmit": false,
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

@@ -4,13 +4,13 @@ import { FileUtilities } from "./file-utilities";
 export class Utilities {
   private static instance: Utilities;
 
-  public readonly commonUtilites: CommonUtilities;
+  public readonly common: CommonUtilities;
 
-  public readonly fileUtilities: FileUtilities;
+  public readonly files: FileUtilities;
 
   private constructor() {
-    this.commonUtilites = new CommonUtilities();
-    this.fileUtilities = new FileUtilities(this.commonUtilites);
+    this.common = new CommonUtilities();
+    this.files = new FileUtilities(this.common);
   }
 
   public static getInstance(): Utilities {

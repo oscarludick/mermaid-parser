@@ -17,6 +17,7 @@
     "minimatch": "^9.0.1"
   },
   "devDependencies": {
+    "@types/babel__traverse": "^7.20.1",
     "@types/node": "^20.2.5",
     "typescript": "^5.1.3"
   }
