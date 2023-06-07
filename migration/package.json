@@ -1,0 +1,23 @@
+{
+  "name": "mermaid-diagram-gen",
+  "version": "1.0.0",
+  "description": "Generate mermaid diagriams from the path specified",
+  "main": "index.ts",
+  "scripts": {
+    "tsc": "npx tsc",
+    "parse": "npm run tsc && node dist/index.js",
+    "debug": "node --inspect dist/"
+  },
+  "author": "Oscar Ludick",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/parser": "^7.14.8",
+    "@babel/traverse": "^7.14.8",
+    "fs": "^0.0.1-security",
+    "minimatch": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.2.5",
+    "typescript": "^5.1.3"
+  }
+}
