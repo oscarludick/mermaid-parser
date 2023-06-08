@@ -17,7 +17,7 @@ export class DirectoryParser {
   ): DataFile[] {
     if (this._utils.files.isDirectory(path)) {
       const contentDirectory = this._utils.files.readDirectory(path) || [];
-      const directory = this._utils.common.filterArrayMinimatch(
+      const directory = this._utils.common.excludeItemWithPattern(
         contentDirectory,
         excludedFiles
       );
@@ -32,22 +32,27 @@ export class DirectoryParser {
     excludedFiles: string[]
   ): DataFile[] {
     const dataFiles: DataFile[] = [];
-    for (let index in directoryFiles) {
+    for (const index in directoryFiles) {
       const path = `${rootPath}/${directoryFiles[index]}`;
-      const parsedDirectoryData = this._parseDirectoryFiles(
-        path,
-        excludedFiles
-      );
-      dataFiles.push(...parsedDirectoryData);
+      this._appendDirectoryToData(path, dataFiles, excludedFiles);
       this._appendFileToData(path, dataFiles);
     }
     return dataFiles;
   }
 
+  private _appendDirectoryToData(
+    path: string,
+    dataFiles: DataFile[],
+    excludedFiles: string[]
+  ): void {
+    const parsedDirectoryData = this._parseDirectoryFiles(path, excludedFiles);
+    dataFiles.push(...parsedDirectoryData);
+  }
+
   private _appendFileToData(path: string, dataFiles: DataFile[]): void {
-    const file = this._utils.files.readFile(path);
-    if (file) {
-      dataFiles.push({ path, content: file });
+    const content = this._utils.files.readFile(path);
+    if (content) {
+      dataFiles.push({ path, content });
     }
   }
 }
